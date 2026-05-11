@@ -14,3 +14,10 @@ def create_adopter(adopter: AdopterCreate, session: Session = Depends(get_sessio
     session.commit()
     session.refresh(db_adopter)
     return db_adopter
+
+@router.get("/", response_model=List[Adopter])
+def read_adopters(experience: Optional[bool] = None, session: Session = Depends(get_session)):
+    statement = select(Adopter)
+    if experience is not None:
+        statement = statement.where(Adopter.has_experience == experience)
+    return session.exec(statement).all()
