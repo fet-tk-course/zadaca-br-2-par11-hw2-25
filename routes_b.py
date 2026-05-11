@@ -60,3 +60,12 @@ def update_adopter_partial(adopter_id: int, adopter_update: AdopterUpdate, sessi
     return adopter
 
 
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_adopter(id: int, session: Session = Depends(get_session)):
+    # Brisanje resursa
+    adopter = session.get(Adopter, id)
+    if not adopter:
+        raise HTTPException(status_code=404, detail="Adopter not found")
+    session.delete(adopter)
+    session.commit()
+    return None
