@@ -7,7 +7,7 @@ class Adopter(SQLModel, table=True):
     last_name: str
     age: int
     email: str
-    phone_number: str
+    phone_number: int
     has_experience: bool = False
 
 class AdopterCreate(SQLModel):
@@ -15,7 +15,7 @@ class AdopterCreate(SQLModel):
     last_name: str
     age: int
     email: str
-    phone_number: str
+    phone_number: int
     has_experience: bool = False
 
 class AdopterUpdate(SQLModel):
@@ -23,5 +23,5 @@ class AdopterUpdate(SQLModel):
     last_name: Optional[str] = None
     age: Optional[int] = None
     email: Optional[str] = None
-    phone_number: Optional[str] = None
+    phone_number: Optional[int] = None
     has_experience: Optional[bool] = None
