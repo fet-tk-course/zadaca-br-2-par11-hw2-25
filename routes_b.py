@@ -44,4 +44,19 @@ def replace_adopter(adopter_id: int, adopter_update: AdopterCreate, session: Ses
     session.refresh(adopter)
     return adopter
 
+@router.patch("/{adopter_id}", response_model=Adopter)
+def update_adopter_partial(adopter_id: int, adopter_update: AdopterUpdate, session: Session = Depends(get_session)):
+    adopter = session.get(Adopter, adopter_id)
+    if not adopter:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Udomitelj nije pronađen")
+    
+    adopter_data = adopter_update.model_dump(exclude_unset=True)
+    for key, value in adopter_data.items():
+        setattr(adopter, key, value)
+    
+    session.add(adopter)
+    session.commit()
+    session.refresh(adopter)
+    return adopter
+
 
