@@ -44,20 +44,23 @@ def replace_adopter(adopter_id: int, adopter_update: AdopterCreate, session: Ses
     session.refresh(adopter)
     return adopter
 
-@router.patch("/{adopter_id}", response_model=Adopter)
-def update_adopter_partial(adopter_id: int, adopter_update: AdopterUpdate, session: Session = Depends(get_session)):
-    adopter = session.get(Adopter, adopter_id)
-    if not adopter:
+@router.patch("/{id}", response_model=Adopter)
+def update_adopter_partial(id: int, adopter_update: AdopterUpdate, session: Session = Depends(get_session)):
+    # 1. Pronađi postojeći resurs u bazi
+    db_adopter = session.get(Adopter, id)
+    
+    if not db_adopter:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Udomitelj nije pronađen")
     
-    adopter_data = adopter_update.model_dump(exclude_unset=True)
-    for key, value in adopter_data.items():
-        setattr(adopter, key, value)
+    update_data = adopter_update.model_dump(exclude_unset=True)
     
-    session.add(adopter)
+    for key, value in update_data.items():
+        setattr(db_adopter, key, value)
+    
+    session.add(db_adopter)
     session.commit()
-    session.refresh(adopter)
-    return adopter
+    session.refresh(db_adopter)
+    return db_adopter
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
