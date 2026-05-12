@@ -3,12 +3,12 @@
 
 ## O projektu
 
-[Ovdje ukratko opišite domenu vaše aplikacije i njenu svrhu]
+Ova aplikacija predstavlja digitalni sistem za upravljanje procesom udomljavanja životinja. Cilj projekta je omogućiti azilima za životinje efikasnu evidenciju dostupnih ljubimaca i potencijalnih udomitelja. Aplikacija služi kao centralizovana platforma koja povezuje životinje koje traže dom sa ljudima koji ispunjavaju uslove za udomljavanje, čime se ubrzava i olakšava cijeli proces.
 
 ## Tim
 
-- **Student A**: [Ime Prezime] - resurs: `/resursi_a`
-- **Student B**: [Ime Prezime] - resurs: `/resursi_b`
+- **Student A**: Džana Dugonjić - resurs: `/resursi_a`
+- **Student B**: Danijela Mihajlović - resurs: `/adopters`
 
 ## Instalacija i pokretanje
 
@@ -67,14 +67,71 @@ curl -X POST "http://localhost:8000/resursi_a" \
   -d '{"polje1": "vrijednost", "polje2": 123}'
 ```
 
-### Resurs B: `/resursi_b`
+### Resurs B: `/adopters`
 
-[Analogno kao za Resurs A]
+| Metoda | Ruta | Opis |
+|--------|------|------|
+| GET | `/adopters` | Lista svih resursa (sa query filterom) |
+| GET | `/adopters/{id}` | Dohvatanje resursa po ID-u |
+| POST | `/adopters` | Kreiranje novog resursa |
+| PUT | `/adopters/{id}` | Potpuna zamjena resursa |
+| PATCH | `/adopters/{id}` | Djelimično ažuriranje resursa |
+| DELETE | `/adopters/{id}` | Brisanje resursa |
+
+**Primjeri zahtjeva:**
+#Kreiranje novog udomitelja
+curl -X 'POST' \
+  'http://localhost:8000/adopters' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "first_name": "Mujo",
+  "last_name": "Mujić",
+  "age": 28,
+  "email": "mujo.mujic@email.com",
+  "phone_number": "061123456",
+  "has_experience": true
+}'
+
+#Dohvatanje udomitelja koji imaju prethodno iskustvo
+curl -X 'GET' \
+  'http://localhost:8000/adopters?experience=true' \
+  -H 'accept: application/json'
+
+#Dohvatanje detalja o udomitelju sa ID-om 1
+curl -X 'GET' \
+  'http://localhost:8000/adopters/1' \
+  -H 'accept: application/json'
+
+#Potpuna zamjena podataka za udomitelja sa ID-om 1
+curl -X 'PUT' \
+  'http://localhost:8000/adopters/1' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "first_name": "Mujo",
+  "last_name": "Nova-Prezime",
+  "age": 30,
+  "email": "mujo.novi@email.com",
+  "phone_number": "061999888",
+  "has_experience": false
+}'
+
+#Promjena samo broja telefona za udomitelja sa ID-om 1
+curl -X 'PATCH' \
+  'http://localhost:8000/adopters/1' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "phone_number": "062999888"
+}'
+
+#Brisanje udomitelja po ID-u
+curl -X 'DELETE' \
+  'http://localhost:8000/adopters/1' \
+  -H 'accept: */*'
 
 ## Korištenje AI alata
 
 ### Alat: [GitHub Copilot / ChatGPT / ...]
-**Model:** [GPT-4, Copilot model, ...]
+**Model:** Gemini
 
 **Primjer 1:**
 - **Prompt:** [Npr. "Kreiraj SQLModel klasu za entitet Knjiga sa poljima naslov, autor, godina, isbn"]
@@ -82,9 +139,9 @@ curl -X POST "http://localhost:8000/resursi_a" \
 - **Prilagodbe:** [Da li ste morali prilagoditi generisani kod]
 
 **Primjer 2:**
-- **Prompt:** [Npr. "Implementiraj PATCH endpoint sa exclude_unset=True"]
-- **Kako je pomoglo:** [Opis]
-- **Prilagodbe:** [Opis]
+- **Prompt:** Kako bih mogla implementirati get metodu u kojoj dohvatamo podatke po ID-u?
+- **Kako je pomoglo:** AI mi je napisao kod za traženu metodu, te mi je objasnio kako taj kod radi.
+- **Prilagodbe:** Generisani kod je bio ispravno napisan tako da ga nisam morala prilagođavati
 
 ## Napomene
 
