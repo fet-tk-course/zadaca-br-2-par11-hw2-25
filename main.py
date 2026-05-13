@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 
 from database import create_db_and_tables
 from routes_b import router as router_adopters
+from routes_a import router as animals_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,6 +19,7 @@ app = FastAPI(
 )
 
 app.include_router(router_adopters)
+app.include_router(animals_router)
 
 @app.get("/")
 def read_root():
