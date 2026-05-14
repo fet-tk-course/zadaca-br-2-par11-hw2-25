@@ -136,6 +136,26 @@ Resurs `Animal` predstavlja životinju koja se nalazi u azilu i dostupna je za u
 | PATCH | `/animals/{animal_id}` | Djelimično ažuriranje podataka za životinju |
 | DELETE | `/animals/{animal_id}` | Brisanje životinje |
 
+## Dodatne funkcionalnosti za Animal resurs
+
+### Validacija podataka
+
+U modelima `AnimalCreate` i `AnimalUpdate` dodani su Pydantic validatori.
+
+Validacijska pravila su:
+
+- `name` ne smije biti prazan string
+- `species` ne smije biti prazan string
+- `age` mora biti veći od 0
+- `adoption_fee` ne smije biti negativan broj
+
+Validatori provjeravaju da name i species nisu prazni stringovi, da je age veći od nule i da adoption_fee nije negativan.
+
+Dodana je provjera koja vraća HTTP 409 Conflict ako resurs s tim jedinstvenim poljem već postoji (ako ime i vrsta životinje već postoje).
+Dakle u POST endpoint je dodana provjera duplikata, tako da se ne može kreirati životinja sa istim imenom i istom vrstom ako već postoji u bazi. Ako postoji, vraća se HTTP 409 Conflict. 
+
+Također je dodan custom GET endpoint /animals/statistics, koji direktno radi sa bazom i vraća podatke: ukupan broj životinja, broj vakcinisanih, broj nevakcinisanih i prosječnu naknadu za udomljavanje. 
+
 ### Query filter za `/animals`
 
 Endpoint `GET /animals/` podržava opcionalni query parametar `species`.
