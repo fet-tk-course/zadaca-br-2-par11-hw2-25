@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlmodel import Session, select
-from models_b import Adopter, AdopterCreate, AdopterUpdate
+from models_b import *
 from typing import List, Optional
 from database import get_session
 
@@ -8,12 +9,29 @@ router = APIRouter(prefix="/adopters", tags=["Adopters"])
 
 @router.post("/", response_model=Adopter, status_code=status.HTTP_201_CREATED)
 def create_adopter(adopter: AdopterCreate, session: Session = Depends(get_session)):
+    statement = select(Adopter).where(Adopter.email == adopter.email)
+    existing_adopter = session.exec(statement).first()
+
+    if existing_adopter:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, 
+            detail="Korisnik sa ovim emailom već postoji."
+        )
     # Kreiranje novog udomitelja
     db_adopter = Adopter.model_validate(adopter)
+
     session.add(db_adopter)
     session.commit()
     session.refresh(db_adopter)
     return db_adopter
+
+@router.post("/resursi/provjeri-naziv", response_model=NameCheckResponse)
+def provjeri_naziv(payload: NameCheckRequest, session: Session = Depends(get_session)):
+    statement = select(Adopter).where(Adopter.first_name == payload.naziv)
+    rez = session.exec(statement).first()
+    is_available = rez is None
+    
+    return NameCheckResponse(dostupan=is_available)
 
 @router.get("/", response_model=List[Adopter])
 def read_adopters(experience: Optional[bool] = None, session: Session = Depends(get_session)):

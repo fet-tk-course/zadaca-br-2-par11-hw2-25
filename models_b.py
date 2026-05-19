@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
-from pydantic import field_validator
+from pydantic import BaseModel, field_validator
 
 class Adopter(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -25,6 +25,13 @@ class AdopterCreate(SQLModel):
         if "@" not in value:
             raise ValueError("Email adresa mora sadržavati znak '@'")
         return value
+    
+    @field_validator("first_name", "last_name")
+    @classmethod
+    def naziv_mora_pocinjati_velikim(cls, v):
+        if not v[0].isupper():
+            raise ValueError("Naziv mora pocinjati velikim slovom")
+        return v
 
 class AdopterUpdate(SQLModel):
     first_name: Optional[str] = Field(default=None, min_length=1)
@@ -40,3 +47,16 @@ class AdopterUpdate(SQLModel):
         if value is not None and "@" not in value:
             raise ValueError("Email adresa mora sadržavati znak '@'")
         return value
+    
+    @field_validator("first_name", "last_name")
+    @classmethod
+    def naziv_mora_pocinjati_velikim(cls, v):
+        if not v[0].isupper():
+            raise ValueError("Naziv mora pocinjati velikim slovom")
+        return v
+    
+class NameCheckRequest(SQLModel):
+    naziv: str
+
+class NameCheckResponse(SQLModel):
+    dostupan: bool

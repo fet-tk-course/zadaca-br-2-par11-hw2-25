@@ -391,3 +391,14 @@ Fast-forward merge se ne koristi.
 ## Zaključak
 
 Ova REST API aplikacija omogućava osnovno upravljanje podacima u sistemu za udomljavanje životinja. Kroz implementaciju dva povezana resursa, `animals` i `adopters`, aplikacija demonstrira rad sa FastAPI rutama, SQLModel modelima, SQLite bazom podataka, dependency injection pristupom i osnovnim Git workflow-om za timski rad.
+
+
+
+### Provjera zadace Student B
+
+**Z1a**: Obzirom na to da sam vec imala @field_valiodator za provjeru email adrese (da mora sadrzavati @), implementirala sam jos jedan @field_validator za provjeru da li ime i prezime udomitelja pocinju velikim slovom.
+**Z1b**: Dodala sam provjeru u POST metodu koja provjerava da li vec postoji udomitelj sa istim emailom.
+**Z2**: Metod POST prima ime i vraca bool vrijednost u zavisnosti da li u bazi postoji korisnik sa tim imenom ili ne postoji.
+Primjer zahtjeva je da posaljemo da li u bazi postoji udomitelj sa imenom Danijela, a odgovor nam je true ili false.
+**Z1**: Porvjeravamo da li u emailu postoji znak @ i da li ime i prezime pocinju velikim slovom. Ukoliko prvo nije tacno vraca se HTTP greska sa porukom "Email adresa mora sadržavati znak '@'", a ukoliko drugo validacijsko pravilo nije ispunjeno vrati se HTTP greska sa porukom: "Naziv mora pocinjati velikim slovom".
+u Z1b se jedinstvenost provjerava u polju email, te ukoliko udomitelj sa tim emailom vec postoji vraca se HTTP_409_CONFLICT i poruka "Korisnik sa ovim emailom već postoji."
